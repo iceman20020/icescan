@@ -58,4 +58,26 @@ async def run_scan(cfg, console) -> int:
                         ctx.add_finding(f)
                 except Exception as e:
                     console.log(f"check {chk.name} failed: {e}")
-               
+                checkpoint.mark_done(f"{chk.name}:start")
+
+            from icescan.report.html import write_html
+            from icescan.report.json_out import write_json
+            from icescan.report.sarif import write_sarif
+            from icescan.report.summary_txt import write_summary
+            from icescan.ui.summary import print_summary
+
+            cfg.output.mkdir(parents=True, exist_ok=True)
+            if "json" in cfg.formats:
+                write_json(ctx, cfg.output / "findings.json", scan_id)
+            if "html" in cfg.formats:
+                write_html(ctx, cfg.output / "index.html", scan_id)
+            if "sarif" in cfg.formats:
+                write_sarif(ctx, cfg.output / "findings.sarif")
+            if "txt" in cfg.formats:
+                write_summary(ctx, cfg.output / "summary.txt", scan_id)
+
+            print_summary(console, ctx, elapsed=time.time() - start)
+            return 0
+    finally:
+        if oob:
+            await oob.stop()
