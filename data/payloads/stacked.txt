@@ -1,0 +1,6 @@
+'; SELECT 1--
+'; SELECT 1; SELECT 1--
+'; WAITFOR DELAY '0:0:3'--
+'; EXEC sp_executesql N'SELECT 1'--
+'; CREATE TABLE icescan_test(x int)--
+'; INSERT INTO icescan_test VALUES(1)--
