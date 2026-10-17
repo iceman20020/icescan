@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>icescan — {{ target }}</title>
+<style>{{ styles }}</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="logo">
+    <span class="logo-mark">◤</span>
+    <span class="logo-text">icescan</span>
+    <span class="logo-ver">v{{ version }}</span>
+  </div>
+  <div class="topbar-meta">
+    <span><b>target</b> {{ target }}</span>
+    <span><b>level</b> {{ level }}</span>
+    <span><b>scan</b> {{ scan_id }}</span>
+    <span><b>at</b> {{ generated_at }}</span>
+  </div>
+</header>
+
+<section class="cards">
+  <div class="card card-total"><div class="n">{{ stats.findings }}</div><div class="l">total</div></div>
+  <div class="card card-crit"><div class="n">{{ stats.critical }}</div><div class="l">critical</div></div>
+  <div class="card card-high"><div class="n">{{ stats.high }}</div><div class="l">high</div></div>
+  <div class="card card-med"><div class="n">{{ stats.medium }}</div><div class="l">medium</div></div>
+  <div class="card card-low"><div class="n">{{ stats.low }}</div><div class="l">low</div></div>
+  <div class="card card-info"><div class="n">{{ stats.info }}</div><div class="l">info</div></div>
+  <div class="card card-req"><div class="n">{{ stats.requests }}</div><div class="l">requests</div></div>
+  <div class="card card-crawl"><div class="n">{{ stats.crawled }}</div><div class="l">crawled</div></div>
+</section>
+
+<section class="charts">
+  <div class="chart-box">
+    <h3>severity</h3>
+    <canvas id="sevChart" width="240" height="240"
+            data-critical="{{ severity_counts.critical }}"
+            data-high="{{ severity_counts.high }}"
+            data-medium="{{ severity_counts.medium }}"
+            data-low="{{ severity_counts.low }}"
+            data-info="{{ severity_counts.info }}"></canvas>
+  </div>
+  <div class="chart-box wide">
+    <h3>by category</h3>
+    <canvas id="catChart" width="480" height="240"
+            data-cats='{{ category_counts | tojson }}'></canvas>
+  </div>
+  <div class="chart-box">
+    <h3>recon</h3>
+    <ul class="recon">
+      <li><b>tech</b> {{ recon.tech | join(', ') or '—' }}</li>
+      <li><b>waf</b> {{ recon.waf or '—' }}</li>
+      <li><b>server</b> {{ recon.headers.get('Server') or recon.headers.get('server') or '—' }}</li>
+      <li><b>status</b> {{ recon.status or '—' }}</li>
+    </ul>
+  </div>
+</section>
+
+<section class="findings">
+  <div class="findings-head">
+    <h2>findings</h2>
+    <input id="filter" placeholder="filter… (severity, check, url)">
+  </div>
+  <table id="findings-table">
+    <thead>
+      <tr>
+        <th data-sort="severity" class="w-sev">sev</th>
+        <th data-sort="check" class="w-check">check</th>
+        <th data-sort="method" class="w-method">m</th>
+        <th data-sort="url">url</th>
+        <th data-sort="param" class="w-param">param</th>
+        <th class="w-exp"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for f in findings %}
+      <tr class="row sev-{{ f.severity.value }}" data-sev="{{ f.severity.value }}" data-check="{{ f.check }}">
+        <td><span class="chip chip-{{ f.severity.value }}">{{ f.severity.value }}</span></td>
+        <td><span class="check">{{ f.check }}</span></td>
+        <td>{{ f.method }}</td>
+        <td class="url"><span class="urltext">{{ f.url }}</span></td>
+        <td>{{ f.param or '' }}</td>
+        <td><button class="expand" data-target="ev-{{ loop.index }}">+</button></td>
+      </tr>
+      <tr class="evidence-row" id="ev-{{ loop.index }}" hidden>
+        <td colspan="6">
+          <div class="evidence">
+            {% if f.payload %}<div class="ev-line"><b>payload</b><code>{{ f.payload }}</code></div>{% endif %}
+            {% if f.dbms %}<div class="ev-line"><b>dbms</b><code>{{ f.dbms }}</code></div>{% endif %}
+            {% if f.note %}<div class="ev-line"><b>note</b>{{ f.note }}</div>{% endif %}
+            {% if f.evidence %}
+              {% for k, v in f.evidence.items() %}
+              <div class="ev-line"><b>{{ k }}</b><code>{{ v }}</code></div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  icescan v{{ version }} — crafted by iceman · {{ generated_at }}
+</footer>
+
+<script>{{ script }}</script>
+</body>
+</html>
